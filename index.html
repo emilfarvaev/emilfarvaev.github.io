@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+	<title>labooda.ru</title>
+	<link rel="stylesheet" href="css/typicons.min.css">
+	<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+	<header>
+		<div>
+			<a id="logo" href="#main">labooda <sup><i style="font-size: .7em;">alpha</i></sup></a>
+			<div id="nav-btn"><span class="typcn typcn-th-menu"></span></div>
+			<div id="nav-container">
+				<div id="user-panel"></div>
+				<nav id="main-nav"></nav>
+			</div>
+		</div>
+	</header>
+	<script src="js/templayed.js"></script>
+	<script src="js/markdown.js"></script>
+	<script src="js/main.js"></script>
+	<div id="body">
+		<div id="pb-wrapper"></div>
+		<div id="notifications"></div>
+		<div id="content">
+
+	</div>
+	</div>
+	
+	<footer>
+		<div class="content">
+			<div class="footer-comp">
+				<span>Форум для реальных айтишников</span>
+			</div>
+		</div>
+	</footer>
+
+	<script type="text/template" id="nav-template">
+	<ul>
+		<li {{main}}><a href="#main">разделы</a></li>
+		<li {{themes}}><a href="#themes">темы</a></li>
+		<li {{users}}><a href="#users">пользователи</a></li>
+		<li {{feedback}}><a href="#feedback">отзыв</a></li>
+	</ul>
+	</script>
+	
+	<script type="text/template" id="user-panel-template">
+	{{#showUser}}
+		<span id="user-link">{{nickname}}</span>
+		<div id="user-panel-menu">
+			<a href="#user/{{nickname}}"><span class="typcn typcn-user"></span> Мой профиль</a>
+			<hr>
+			<span class="user-panel-menu-btn" id="user-logout-btn"><span class="typcn typcn-power"></span> Выход</span>
+		</div>
+	{{/showUser}}
+	{{#showLinks}}<a href="#sign-in">вход</a> | <a href="#sign-up">регистрация</a>{{/showLinks}}
+	</script>
+	
+	<script type="text/template" id="feedback-template">
+	<div class="content">
+		<h2>Отправьте нам ваш отзыв</h2>
+		<p>
+			Это альфа версия форума, само собой, тут нет многих функций, но зато есть куча багов. Будем рады, если вы напишете нам все замечания, которые заметили.
+		</p>
+		<form id="fb-form">
+			<label>Ваш отзыв
+				<textarea id="fb-message"></textarea>
+			</label>
+	
+			<label style="color: #333; font-size: 1em;">
+				<input type="checkbox" id="fb-anonym" value="true"></input>
+				Анонимно
+			</label>
+	
+			<p>
+				<input type="submit" value="Отправить">
+			</p>
+		</form>
+	</div>
+	</script>
+	
+	<script type="text/template" id="repassword-query-template">
+	<div class="content">
+		<h2>Сброс пароля</h2>
+		<p>Введите ваш email и мы пришлём вам письмо со ссылкой на сброс пароля</p>
+		<form id="email-form" class="small-form">
+			<p>
+				<input type="email" id="email" value="{{email}}" required>
+			</p>
+			<p>
+				<input type="submit" value="Отправить">
+			</p>
+		</form>
+	</div>
+	</script>
+	
+	<script type="text/template" id="repassword-template">
+	<div class="content">
+		<h2>Смена пароля</h2>
+		<form id="repassword-form" class="small-form">
+			<p>
+				<label>
+					Новый пароль:
+					<input type="password" id="password" required autofocus>
+				</label>
+			</p>
+	
+			<p>
+				<label>
+					Ещё раз:
+					<input type="password" id="repeat-password" required>
+				</label>
+			</p>
+	
+			<p>
+				<input type="submit" value="Готово">
+			</p>
+		</form>
+	</div>
+	</script>
+	
+	<script type="text/template" id="sign-in-template">
+	<div class="content">
+		<h2>Вход на сайт</h2>
+		<form id="aut-form" class="small-form">
+			<p>
+				<label for="aut-id">Ник или email</label>
+				<input type="text" id="aut-id" required autofocus>
+			</p>
+	
+			<p>
+				<label for="aut-id">Пароль <a href="#password-recovery" id="repassword-link">Забыли?</a></label>
+				<span id="password-wrapper">
+					<input type="password" id="aut-password" required>
+					<span id="show-password-btn" data-target="aut-password" class="typcn typcn-eye"></span>
+				</span>
+			</p>
+	
+			<p>
+				<input type="submit" value="Войти">
+			</p>
+		</form>
+	</div>
+	</script>
+	
+	<script type="text/template" id="sign-up-template">
+	<div class="content">
+		<h2>Регистрация</h2>
+		<form id="reg-form" class="small-form">
+			<p>
+				<label for="reg-nick">Ник (имя пользователя)</label>
+				<span style="font-size: 14px;">Допустимые символы: <b style="font-weight: 900;">a-z 0-9 - _ .</b></span><br>
+				<span style="font-size: 14px;">Длина: от 4 до 64 символов</b></span>
+				<input type="text" id="reg-nick" required autofocus>
+			</p>
+	
+			<p>
+				<label for="reg-mail">email</label>
+				<input type="email" id="reg-mail" required>
+			</p>
+	
+			<p>
+				<label for="reg-password">Пароль</label>
+				<span id="password-wrapper">
+					<input type="password" id="reg-password" required>
+					<span id="show-password-btn" data-target="reg-password" class="typcn typcn-eye"></span>
+				</span>
+			</p>
+	
+			<p>
+				<input type="submit" value="Зарегистрироваться">
+			</p>
+		</form>
+	</div>
+	</script>
+	
+	<script type="text/template" id="info-template">
+	<div class="content">
+		<h2>{{data.title}}</h2>
+		<p>
+			{{data.text}}
+		</p>
+	</div>
+	</script>
+	
+	<script type="text/template" id="main-template">
+	<div class="content">
+		<div id="sections">
+		{{#data}}
+			<div class="section">
+				<h3><a href="#/{{url}}">{{name}}</a></h3>
+			</div>
+		{{/data}}
+		</div>
+	</div>
+	</script>
+	
+	<script type="text/template" id="section-template">
+	<div class="content">
+		<h2>{{meta.section}}</h2>
+		<div>
+			Темы:
+		</div>
+		<div id="themes-list">
+		{{#data}}
+			<a href="#/{{url}}">{{name}} <div>темы: {{themesCount}}{{^themesCount}}0{{/themesCount}}</div></a>
+		{{/data}}
+			</div>
+	</div>
+	</script>
+	
+	<script type="text/template" id="themes-list-template">
+	<div class="content">
+		<h2>{{meta.section}}</h2>
+		{{^data}}
+			Здесь ничего нет... Создайте первую тему!
+		{{/data}}
+		<p><span class="action-btn add-theme-btn"><span class="typcn typcn-plus"></span>&nbsp;Создать тему</span></p>
+		{{#themesExist}}
+		<div>
+			Темы:
+		</div>
+		{{/themesExist}}
+		<div id="themes">
+		{{#data}}
+			<div class="theme">
+				<div class="theme-heading">
+					<div class="theme-date">{{date}}</div>
+					{{#showDeleteBtn}}<span class="delete-theme-btn typcn typcn-times" data-delete-theme-btn data-target="{{id}}"></span>{{/showDeleteBtn}}
+				</div>
+				<h4><a href="{{../getUrl}}/{{id}}">{{title}}</a></h4>
+				<div class="theme-info">
+					<div>Автор: <a href="#user/{{nickname}}">{{nickname}}</a></div>
+					<div>Сообщения: {{messagesCount}}{{^messagesCount}}0{{/messagesCount}}</div>
+				</div>
+			</div>
+		{{/data}}
+		</div>
+		<div class="pager">
+			{{{pager}}}
+		</div>
+	</div>
+	</script>
+	
+	<script type="text/template" id="themes-search-template">
+	<div class="content">
+		<h3>Темы:</h3>
+		<form id="themes-search-form" class="search-form">
+			<input required type="text" id="themes-search-input" value="{{data.searchQuery}}">
+			<input type="submit" value="Поиск">
+		</form>
+		{{^data.themesExist}}
+		<div class="gray-text">Нет результатов</div>
+		{{/data.themesExist}}
+		<div id="themes">
+		{{#data}}
+			<div class="theme">
+				<div class="theme-heading">
+					<div class="theme-date">{{date}}</div>
+					{{#showDeleteBtn}}<span class="delete-theme-btn typcn typcn-times" data-delete-theme-btn data-target="{{id}}"></span>{{/showDeleteBtn}}
+				</div>
+				<h4><a href="#/{{sectionUrl}}/{{id}}">{{title}}</a></h4>
+				<div class="theme-info">
+					<div>Автор: <a href="#user/{{nickname}}">{{nickname}}</a></div>
+					<div>Сообщения: {{messagesCount}}{{^messagesCount}}0{{/messagesCount}}</div>
+				</div>
+			</div>
+		{{/data}}
+		</div>
+		<div class="pager">
+			{{{pager}}}
+		</div>
+	</div>
+	</script>
+	
+	<script type="text/template" id="users-search-template">
+	<div class="content">
+		<h3>Пользователи:</h3>
+		<form id="users-search-form" class="search-form">
+			<input required type="text" id="users-search-input" value="{{data.searchQuery}}">
+			<input type="submit" value="Поиск">
+		</form>
+		{{^data.usersExist}}
+		<div class="gray-text">Нет результатов</div>
+		{{/data.usersExist}}
+		<div id="users">
+		{{#data}}
+			<a href="#user/{{nickname}}" class="user">
+				<div class="user-avatar">
+					{{#avatarExists}}
+						<img class="msg-user-avatar" src="{{author.avatar}}">
+					{{/avatarExists}}
+					{{^avatarExists}}
+						<img class="msg-user-avatar" src="img/user.png">
+					{{/avatarExists}}
+				</div>
+				<div class="user-info">
+					<div class="user-nickname">
+						<span>{{nickname}}</span>
+					</div>
+					<div class="user-rating">
+						<span class="gray-text">Рейтинг:</span> {{rating}}{{^rating}}0{{/rating}}
+					</div>
+				</div>
+			</a>
+		{{/data}}
+		</div>
+		<div class="pager">
+			{{{pager}}}
+		</div>
+	</div>
+	</script>
+	
+	<script type="text/template" id="theme-template">
+	<div class="content">
+		<h2>{{data.title}}</h2>
+		<div class="gray-text">{{data.date}}</div>
+		{{^data.messagesExists}}
+			<div>Здесь ничего нет... Напишите первое сообщение!</div>
+		{{/data.messagesExists}}
+		<div class="gray-text">Сообщений: {{data.messagesCount}}{{^data.messagesCount}}0{{/data.messagesCount}}</div>
+		{{#data.messages}}
+			<div class="msg">
+				<div class="msg-user">
+				{{#avatarExists}}
+					<a href="#user/{{author.nickname}}" class="image-link"><img class="msg-user-avatar" src="{{author.avatar}}"></a>
+				{{/avatarExists}}
+				{{^avatarExists}}
+					<a href="#user/{{author.nickname}}" class="image-link"><img class="msg-user-avatar" src="img/user.png"></a>
+				{{/avatarExists}}
+	
+				<a href="#user/{{author.nickname}}">{{author.nickname}}</a>
+				</div>
+				<div class="msg-body">
+					<div class="msg-date">{{date}}</div>
+					<div class="msg-data">{{{message}}}</div>
+				</div>
+				<div class="clearfix"></div>
+				<div class="msg-actions">
+					<!--
+					<p>
+						<a href="#" class="action-link">Ответить</a>
+						<a href="#" class="action-link">Цитировать</a>
+					</p>
+					-->
+					<p>
+						Рейтинг:
+						<span data-vote-target="{{messageId}}" data-vote-value="true" class="action-link{{#votedUp}} green{{/votedUp}} typcn typcn-arrow-up-thick"></span>
+						<span class="rating-value">{{rating}}{{^rating}}0{{/rating}}</span>
+						<span data-vote-target="{{messageId}}" data-vote-value="" class="action-link{{#votedDown}} red{{/votedDown}} typcn typcn-arrow-down-thick"></span>
+						{{#showDeleteBtn}}<span class="delete-msg-btn typcn typcn-times" data-delete-msg-btn data-target="{{messageId}}"></span>{{/showDeleteBtn}}
+					</p>
+				</div>
+			</div>
+		{{/data.messages}}
+		<p class="pager">
+			{{{pager}}}
+		</p>
+		{{#data.showMessageForm}}
+		<div>
+			<form id="add-message-form">
+				<label>
+					Ваше сообщение
+					<textarea id="message"></textarea>
+				</label>
+				<input type="submit" value="Отправить">
+			</form>
+		</div>
+		{{/data.showMessageForm}}
+		{{^data.showMessageForm}}
+		<a href="#sign-in">Войдите</a> в систему, чтобы оставить сообщение
+		{{/data.showMessageForm}}
+	</div>
+	</script>
+	
+	<script type="text/template" id="nf-template">
+	<div class="content">
+		<h2>Такой страницы не существует :(</h2>
+	</div>
+	</script>
+	
+	<script type="text/template" id="user-template">
+	<div class="content">
+		<div id="user">
+			<div id="user-avatar">
+				{{#data.avatarExists}}
+					<img src="{{data.avatar}}" alt="{{data.nickname}} avatar" id="user-avatar-img">
+				{{/data.avatarExists}}
+				{{^data.avatarExists}}
+					<img src="img/user.png" alt="{{data.nickname}} avatar" id="user-avatar-img">
+				{{/data.avatarExists}}
+			</div>
+			<div id="user-info">
+				<h2>{{data.nickname}}</h2>
+	
+				<p>
+					<i class="gray-text">Рейтинг: {{data.rating}}{{^data.rating}}0{{/data.rating}}</i>
+				</p>
+	
+				{{#data.nameExists}}
+					<p>
+						<i class="gray-text">Имя:</i> {{data.name}}
+					</p>
+				{{/data.nameExists}}
+	
+				{{#data.mailExists}}
+					<p>
+						<i class="gray-text">email:</i>
+						<a href="mailto:{{data.mail}}">{{data.mail}}</a>
+						{{^data.mailVerified}}<a href="#confirm/email/{{data.mail}}" class="action-btn">подтвердить</a>{{/data.mailVerified}}
+						{{#data.mailVerified}}<span class="typcn typcn-tick"></span>{{/data.mailVerified}}
+					</p>
+				{{/data.mailExists}}
+	
+				{{#data.registrationTimeExists}}
+					<p>
+						<i class="gray-text">Регистрация: {{data.registrationTime}}</i>
+					</p>
+				{{/data.registrationTimeExists}}
+	
+				{{#data.dateOfBirthExists}}
+					<p>
+						<i class="gray-text">Дата рождения:</i>
+						<br>
+						{{data.dateOfBirth}}
+					</p>
+				{{/data.dateOfBirthExists}}
+	
+				<p>
+					<i class="gray-text">Сообщений:
+					{{data.messagesCount}}{{^data.messagesCount}}0{{/data.messagesCount}}</i>
+				</p>
+	
+				<p>
+					<i class="gray-text">Тем:
+					{{data.themesCount}}{{^data.themesCount}}0{{/data.themesCount}}</i>
+				</p>
+	
+				<p>
+					{{#data.profileEditBtn}}
+					<span class="action-btn" id="profile-edit-btn">Редактировать профиль</span>
+					{{/data.profileEditBtn}}
+				</p>
+			</div>
+		</div>
+	</div>
+	</script>
+	
+	<script type="text/template" id="profile-edit-template">
+	<div class="content">
+		<div id="user">
+			<div id="user-avatar">
+				{{#data.avatarExists}}
+					<img src="{{data.avatar}}" alt="{{data.nickname}} avatar" id="user-avatar-img">
+				{{/data.avatarExists}}
+				{{^data.avatarExists}}
+					<img src="img/user.png" alt="{{data.nickname}} avatar" id="user-avatar-img">
+				{{/data.avatarExists}}
+			</div>
+			<div id="user-info">
+				<h2>{{data.nickname}}</h2>
+	
+				<p>изменение данных</p>
+				<span id="profile-edit-back-btn" class="action-link"><span class="typcn typcn-arrow-left"></span> отмена</span>
+	
+				<form id="profile-edit-form">
+					<p>
+						<label>
+							<i class="gray-text">Имя (настоящее):</i>
+							<input id="name" type="text" value="{{data.name}}">
+						</label>
+					</p>
+	
+					<p>
+						<label>
+							<i class="gray-text">email:</i>
+							<input id="email" type="email" value="{{data.mail}}">
+						</label>
+					</p>
+	
+					<p>
+						<label>
+							<i class="gray-text">Новый пароль:</i>
+							<input id="password" type="password">
+						</label>
+					</p>
+	
+					<!--<p>
+						<i class="gray-text">Дополнительная информация о вас (например, контакты)</i>
+						<textarea id="info"></textarea>
+					</p>-->
+	
+					<p>
+						<input type="submit" value="Готово">
+					</p>
+				</form>
+			</div>
+		</div>
+	</div>
+	</script>
+	
+	<script type="text/template" id="add-theme-template">
+	<div class="content">
+		<h3>Новая тема</h3>
+		<form id="add-theme-form">
+			<p>
+				<label>
+					Раздел
+					<br>
+					<select id="section">
+					{{#data}}
+						<option value="{{url}}">{{name}}</option>
+					{{/data}}
+					</select>
+				</label>
+			</p>
+			<p>
+				<label>
+					Заголовок темы
+					<input type="text" id="title" required>
+				</label>
+			</p>
+			<p>
+				<label>
+					Сообщение
+					<textarea id="message" required></textarea>
+				</label>
+			</p>
+			<p>
+				<label>
+					Теги (через запятую)
+					<input type="text" id="tags" required>
+				</label>
+			</p>
+			<p>
+				<input type="submit" value="Создать">
+			</p>
+		</form>
+	</div>
+	</script>
+
+</body>
+</html>
