@@ -1,5 +1,5 @@
 var forum = {
-	serverHost: "http://forums-edisa.rhcloud.com",
+	serverHost: "https://forums-edisa.rhcloud.com",
 
 	// serverHost: "http://192.168.0.106:8080",
 
